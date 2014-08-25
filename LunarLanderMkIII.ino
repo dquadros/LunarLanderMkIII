@@ -1,7 +1,11 @@
 #include <MAX7219Display.h>
 #include <TM1637Display.h>
 
-// Lunar Lander Mk3
+// Autor: dqsoft.blogspot@gmail.com
+//
+// Lunar Lander Mk3 - Simulação de pouso na Lua para Arduino
+// https://garoa.net.br/wiki/Lunar_Lander_Mk_III
+
 
 // Hardware
 
@@ -37,11 +41,16 @@ static long comb;                  // combustível disponível
 static long veloc;                 // velocidade atual
 static int burn;                   // taxa de queima do combustível
 
+// Valores iniciais para a simulação
 static const long altInicial = 5000000L; 
 static const long combInicial = 19000L;
-static const long combAlerta = 500L;
 static const long velocInicial = 8500L;
 
+// Acender o LED de combustível baixo quando ficar abaixo deste valor
+static const long combAlerta = 500L;
+
+
+// Iniciação
 void setup()
 {
   pinMode (Buzzer, OUTPUT);
@@ -54,19 +63,30 @@ void setup()
   Restart();
 }
 
+// Laço principal do jogo
 void loop()
 {
+  // Reiniciar se botão Reset apertado
   if (!digitalRead (Reset))
-    Restart();  
+    Restart();
+    
+  // Apresentar a situação atual
   AtlDisplay ();
+  
+  // Tratar queima de combustível
   if (digitalRead (Dispara))
     burn = 0;
   else
     burn = analogRead (Queima) >> 5;
+    
+  // Executar a simulação
   Simula ();
+  
+  // Tempo entre os passos da simulação
   delay (100);
 }
 
+// Reinicia a simulação
 void Restart()
 {
   digitalWrite (Buzzer, LOW);
